@@ -1,33 +1,33 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp
-public class makerobotdrive extends OpMode {
+@Autonomous
+public class lift extends OpMode {
+    private DcMotor lift;
+    private CRServo grabber;
     private DcMotor rF,rB,lF,lB;
-
-
-
-
     @Override
     public void init() {
+        lift = hardwareMap.dcMotor.get("lift");
+        grabber = hardwareMap.crservo.get("grabber");
         rF = hardwareMap.dcMotor.get("RF");
         rB = hardwareMap.dcMotor.get("RB");
         lF = hardwareMap.dcMotor.get("LF");
         lB = hardwareMap.dcMotor.get("LB");
 
-        rF.setDirection(DcMotorSimple.Direction.REVERSE);
-        rB.setDirection(DcMotorSimple.Direction.REVERSE);
+        rF.setDirection(DcMotor.Direction.REVERSE);
+        rB.setDirection(DcMotor.Direction.REVERSE);
 
         rF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addLine("Initialized");
-
     }
 
     @Override
@@ -46,10 +46,10 @@ public class makerobotdrive extends OpMode {
             } else {
                 if (!gamepad1.right_bumper && !gamepad1.left_bumper && Math.abs(gamepad1.right_stick_x) <= 0.05 && Math.abs(gamepad1.right_stick_y) <= 0.05 && Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) {
                     lF.setPower(0);
-                lB.setPower(0);
-                rB.setPower(0);
-                rF.setPower(0);
-            }
+                    lB.setPower(0);
+                    rB.setPower(0);
+                    rF.setPower(0);
+                }
             }
             telemetry.addData("RF Power",rF.getPower());
             telemetry.addData("RB Power",rB.getPower());
@@ -102,7 +102,15 @@ public class makerobotdrive extends OpMode {
                 rF.setPower(0);
             }
         }
-
-
+        if (Math.abs(gamepad2.left_stick_y) > 0.05) {
+            lift.setPower(gamepad2.left_stick_y);
+        } else {
+            lift.setPower(0);
+        }
+        if (Math.abs(gamepad2.right_stick_y) > 0.05) {
+            grabber.setPower(gamepad2.right_stick_y);
+        } else {
+            grabber.setPower(0);
+        }
     }
 }
